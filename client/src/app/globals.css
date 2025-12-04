@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --accent-color: #007BFF;
+    --accent-hover: #0056b3;
+    --bg-gradient-start: #e0eafc;
+    --bg-gradient-end: #cfdef3;
+    --card-bg: #ffffff;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b7280;
+    --input-bg: #ffffff;
+    --input-border: #d1d5db;
+    --input-border-focus: #007BFF;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --accent-color: #00B894;
+      --accent-hover: #00a582;
+      --bg-gradient-start: #0f2027;
+      --bg-gradient-end: #203a43;
+      --card-bg: #1e1e1e;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --input-bg: #2a2a2a;
+      --input-border: #404040;
+      --input-border-focus: #00B894;
+    }
+  }
+
+  html {
+    @apply scroll-smooth;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+
+  body {
+    @apply antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .auth-background {
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    transition: background 0.3s ease;
+  }
+
+  .auth-card {
+    background-color: var(--card-bg);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .auth-input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+  }
+
+  .auth-input:focus {
+    border-color: var(--input-border-focus);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .auth-input:focus {
+      box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+    }
+  }
+
+  .auth-label {
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+  }
+
+  .auth-text-secondary {
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+  }
+
+  .auth-button {
+    background-color: var(--accent-color);
+    transition: all 0.3s ease;
+  }
+
+  .auth-button:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .auth-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .auth-link {
+    color: var(--accent-color);
+    transition: color 0.3s ease;
+  }
+
+  .auth-link:hover {
+    color: var(--accent-hover);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-hover);
+}
+
+/* Input autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
