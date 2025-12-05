@@ -1,15 +1,27 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-//! type definition, without ts error
-export interface AuthRequest extends Request {
-    user?: any;
-}
-
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+//! -----------------Types------------------
+export type UserRole = 'ADMIN' | 'MANAGER' | 'EMPLOYEE';
+
+export interface AuthUser {
+    id: number;
+    role: UserRole;
+    email?: string;
+}
+
+export interface AuthRequest extends Request {
+    user?: AuthUser;
+}
+
 //! -----------------Token Validation Functions------------------
-export const isTokenValid = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const isTokenValid = (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+   ) => {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
@@ -19,7 +31,7 @@ export const isTokenValid = (req: AuthRequest, res: Response, next: NextFunction
 
     const token = authHeader.split(' ')[1];
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = jwt.verify(token, JWT_SECRET) as AuthUser;
         req.user = decoded;
         next();
     }
@@ -32,7 +44,11 @@ export const isTokenValid = (req: AuthRequest, res: Response, next: NextFunction
 
 //! -----------------Role Authorization Function------------------
 export const authorizeRoles = (...roles: string[]) => {
-    return (req: AuthRequest, res: Response, next: NextFunction) => {
+    return (
+        req: AuthRequest,
+        res: Response,
+        next: NextFunction
+    ) => {
         if (!req.user || !roles.includes(req.user?.role)) {
             return res.status(403).json({
                 message: 'Forbidden: You do not have the required permissions'

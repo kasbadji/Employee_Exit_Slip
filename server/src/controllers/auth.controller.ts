@@ -1,5 +1,7 @@
 import * as authService from '../services/auth.service';
 import { Request, Response } from 'express';
+import { AuthRequest } from '..//middleware/auth.middleware';
+import { prisma } from '../config/database';
 
 //! -----------------Register Controller------------------
 export const register = async (req: Request, res: Response) => {
@@ -38,3 +40,37 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
+//! -----------------Me Controller------------------
+export const me = async (req: AuthRequest, res: Response) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id_user: req.user.id },
+      select: {
+        id_user: true,
+        email: true,
+        full_name: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.json({
+      user: {
+        id: user.id_user,
+        email: user.email,
+        full_name: user.full_name,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    console.error('me error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};

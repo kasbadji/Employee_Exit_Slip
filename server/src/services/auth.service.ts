@@ -1,4 +1,3 @@
-//! -----------------Imports------------------
 import type { Role } from '../../generated/prisma/client';
 import { prisma } from '../config/database';
 import bcrypt from 'bcrypt';
@@ -8,8 +7,29 @@ import jwt, { Secret, SignOptions } from 'jsonwebtoken';
 const JWT_SECRET: Secret = process.env.JWT_SECRET as string;
 const JWT_EXPIRES_IN: SignOptions['expiresIn'] = (process.env.JWT_EXPIRES_IN as unknown as SignOptions['expiresIn']) || '1h';
 
+//! -----------------Types------------------
+type SafeUser = {
+    id: number;
+    email: string;
+    full_name: string;
+    role: Role;
+};
+
+//! -----------------Helper Functions------------------
+function toSafeUser(user: { id_user: number; email: string; full_name: string; role: Role })
+{
+  const safeUser: SafeUser = {
+    id: user.id_user,
+    email: user.email,
+    full_name: user.full_name,
+    role: user.role,
+  };
+
+  return safeUser;
+}
+
 //! -----------------Register Function------------------
-export const user_register = async (email: string, full_name: string, password: string, role: Role) => {
+export const user_register = async (email: string, full_name: string, password: string, role?: Role) => {
     const isUserExists = await prisma.user.findUnique({
         where: { email }
     });
@@ -24,7 +44,7 @@ export const user_register = async (email: string, full_name: string, password: 
             email,
             full_name,
             password: hashedPassword,
-            role,
+            role: role || 'EMPLOYEE',
         },
     });
 
@@ -33,7 +53,7 @@ export const user_register = async (email: string, full_name: string, password: 
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES_IN }
     );
-    return { token, user: newUser };
+    return { token, user: toSafeUser(newUser) };
 };
 
 //! -----------------Login Function------------------
@@ -55,5 +75,5 @@ export const user_login = async (email: string, password: string) => {
         JWT_SECRET,
         { expiresIn: JWT_EXPIRES_IN }
     );
-    return { token, user: findUser };
+    return { token, user: toSafeUser(findUser) };
 }
