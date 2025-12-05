@@ -13,10 +13,28 @@ model User {
   full_name String
   password  String
   role      Role   @default(EMPLOYEE)
+
+  exitRequests ExitRequest[]
+}
+
+model ExitRequest {
+  id_request  Int        @id @default(autoincrement())
+  reason      String
+  employeeId  Int
+  requestedAt DateTime   @default(now())
+  status      ExitStatus @default(PENDING)
+
+  employee    User       @relation(fields: [employeeId], references: [id_user])
 }
 
 enum Role {
   ADMIN
   MANAGER
   EMPLOYEE
+}
+
+enum ExitStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
