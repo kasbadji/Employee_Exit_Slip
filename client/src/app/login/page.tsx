@@ -26,7 +26,7 @@ export default function LoginPage() {
                 throw new Error("Authentication token not found");
             }
 
-            router.push("/dashboard");
+            router.push("manager/dashboard");
         }
         catch (error: any) {
             setError(error.message || "An unexpected error occurred");

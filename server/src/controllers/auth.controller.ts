@@ -26,6 +26,8 @@ export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
 
+        console.log('Login attempt:', { email, passwordLength: password?.length });
+
         const data = await authService.user_login(
             email,
             password
@@ -36,6 +38,7 @@ export const login = async (req: Request, res: Response) => {
         });
     }
     catch (error: any) {
+        console.error('Login error:', error.message);
         res.status(400).json({ message: error.message });
     }
 };

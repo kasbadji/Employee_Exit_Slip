@@ -34,27 +34,33 @@ export default function RegisterPage() {
                 password: form.password,
                 role: form.role,
             });
-            if (response.status === 201) {
-                setMessage({ text: 'Registration successful! You can now log in.', type: 'success' });
+
+            const { token, user } = response.data;
+
+            if (token && user) {
+                localStorage.setItem('token', token);
+                setMessage({ text: 'Registration successful! Redirecting...', type: 'success' });
+
+                // Reset form
                 setForm({
                     fullName: '',
                     email: '',
                     password: '',
                     role: 'EMPLOYEE',
                 });
+
+                // Redirect based on role
+                setTimeout(() => {
+                    if(user.role === 'ADMIN') window.location.href = '/admin/dashboard';
+                    else if(user.role === 'MANAGER') window.location.href = '/manager/dashboard';
+                    else window.location.href = '/employee/dashboard';
+                }, 500);
             }
-
-            const { token, user } = response.data;
-            localStorage.setItem('token', token);
-
-            if(user.role === 'ADMIN') window.location.href = '/admin/dashboard';
-            else if(user.role === 'MANAGER') window.location.href = '/manager/dashboard';
-            else window.location.href = '/employee/dashboard';
         }
         catch (error: any) {
             const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
             setMessage({ text: errorMessage, type: 'error' });
-            console.error('Registration error:', error.response?.data);
+            console.error('Registration error:', error.response?.data || error.message);
         }
         finally {
             setLoading(false);
