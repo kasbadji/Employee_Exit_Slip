@@ -37,6 +37,16 @@ export async function fetchManagerRequests(
   return res.data;
 }
 
+export async function decideExitRequest(
+  id: number,
+  status: 'APPROVED' | 'REJECTED'
+): Promise<ExitRequest>
+{
+  const res = await api.post(`/exit-requests/manager/${id}/decide`, { status});
+
+  return res.data;
+}
+
 //! ----- Helper function For Employee Dashboard ------
 export async function createExitRequest(reason: string): Promise<ExitRequest>
 {

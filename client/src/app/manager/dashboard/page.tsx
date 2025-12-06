@@ -6,6 +6,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import {
   fetchManagerDashboard,
   fetchManagerRequests,
+  decideExitRequest
 } from '../../../lib/api';
 import type {
   ManagerDashboardStats,
@@ -19,6 +20,8 @@ export default function DashboardPage() {
   const [stats, setStats] = useState<ManagerDashboardStats | null>(null);
   const [requests, setRequests] = useState<ExitRequest[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [actionLoadingId, setActionLoadingId] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading) {
@@ -41,12 +44,49 @@ export default function DashboardPage() {
           setRequests(r);
         } catch (e) {
           console.error(e);
+          setError('Failed to load dashboard data.');
         } finally {
           setDataLoading(false);
         }
       })();
     }
   }, [user, loading, router]);
+
+  const refreshData = async () => {
+    try {
+      const [stats, request] = await Promise.all([
+      fetchManagerDashboard(),
+      fetchManagerRequests('PENDING'),
+      ]);
+
+      setStats(stats);
+      setRequests(request);
+    }
+    catch (e) {
+      console.log(e);
+      setError('Failed to refresh data.');
+    }
+  }
+
+  const handleDecision = async (
+    id: number,
+    status: 'APPROVED' | 'REJECTED'
+  ) => {
+    setError(null);
+    setActionLoadingId(id);
+
+    try {
+      await decideExitRequest(id, status);
+      await refreshData();
+    }
+    catch (e) {
+      console.error(e);
+      setError('Failed to process the request.');
+    }
+    finally {
+      setActionLoadingId(null);
+    }
+  }
 
   if (loading || dataLoading || !stats) {
     return (
@@ -80,6 +120,32 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+              <div className="ml-auto pl-3">
+                <button
+                  onClick={() => setError(null)}
+                  className="inline-flex text-red-400 hover:text-red-500"
+                >
+                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Cards Section */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -179,6 +245,9 @@ export default function DashboardPage() {
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       Status
                     </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -219,6 +288,54 @@ export default function DashboardPage() {
                           <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>
                           {r.status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => handleDecision(r.id_request, 'APPROVED')}
+                            disabled={actionLoadingId !== null}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {actionLoadingId === r.id_request ? (
+                              <>
+                                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Processing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Approve</span>
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDecision(r.id_request, 'REJECTED')}
+                            disabled={actionLoadingId !== null}
+                            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {actionLoadingId === r.id_request ? (
+                              <>
+                                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Processing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>Reject</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
