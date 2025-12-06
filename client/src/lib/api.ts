@@ -18,7 +18,7 @@ api.interceptors.request.use((config) => {
 
 export default api;
 
-//! ----- Helper function ------
+//! ----- Helper function For Manager Dashboard ------
 export async function fetchManagerDashboard(): Promise<ManagerDashboardStats>
 {
   const res = await api.get('/exit-requests/manager/dashboard');
@@ -36,3 +36,19 @@ export async function fetchManagerRequests(
 
   return res.data;
 }
+
+//! ----- Helper function For Employee Dashboard ------
+export async function createExitRequest(reason: string): Promise<ExitRequest>
+{
+  const res = await api.post('/exit-requests', { raison: reason });
+
+  return res.data;
+}
+
+export async function fetchMyExitRequests(): Promise<ExitRequest[]>
+{
+  const res = await api.get('/exit-requests/my');
+
+  return res.data;
+}
+
