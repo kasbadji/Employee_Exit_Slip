@@ -75,7 +75,7 @@ export async function decideOnRequest(req: AuthRequest, res: Response) {
     if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
 
     const requestId = Number(req.params.id);
-    const { status } = req.body;
+    const { status, comment } = req.body;
 
     if (!['APPROVED', 'REJECTED'].includes(status)) {
       return res.status(400).json({ message: 'status must be APPROVED or REJECTED' });
@@ -84,13 +84,31 @@ export async function decideOnRequest(req: AuthRequest, res: Response) {
     const updated = await exitService.decideOnRequest(
       req.user.id,
       requestId,
-      status
+      status,
+      comment
     );
 
     return res.json(updated);
   }
   catch (err) {
     console.error('decideOnRequest error:', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+}
+
+export async function getRequestDetails(req: AuthRequest, res: Response) {
+  try {
+    const id = Number(req.params.id);
+    const request = await exitService.getRequestWithHistory(id);
+
+    if(!request){
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    return res.json(request);
+  }
+  catch (err) {
+    console.error('getRequestDetails error: ', err);
     return res.status(500).json({ message: 'Server error' });
   }
 }

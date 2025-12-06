@@ -6,6 +6,7 @@ import {
     getManagerDashboard,
     getManagerRequests,
     decideOnRequest,
+    getRequestDetails,
 } from '../controllers/exitRequest.controller';
 
 const router = Router();
@@ -38,6 +39,13 @@ router.get(
     isTokenValid,
     authorizeRoles('MANAGER', 'ADMIN'),
     getManagerRequests
+);
+
+router.get(
+    '/manager/requests/:id',
+    isTokenValid,
+    authorizeRoles('MANAGER', 'ADMIN'),
+    getRequestDetails
 );
 
 router.post(

@@ -15,6 +15,7 @@ model User {
   role      Role   @default(EMPLOYEE)
 
   exitRequests ExitRequest[]
+  statusHistory StatusHistory[]
 }
 
 model ExitRequest {
@@ -25,6 +26,19 @@ model ExitRequest {
   status      ExitStatus @default(PENDING)
 
   employee    User       @relation(fields: [employeeId], references: [id_user])
+  history     StatusHistory[]
+}
+
+model StatusHistory {
+  id_history Int     @id @default(autoincrement())
+  exitRequestId Int
+  status    ExitStatus
+  comment String?
+  changedById Int
+  createdAt DateTime @default(now())
+
+  exitRequest ExitRequest @relation(fields: [exitRequestId], references: [id_request])
+  changedBy   User        @relation(fields: [changedById], references: [id_user])
 }
 
 enum Role {
