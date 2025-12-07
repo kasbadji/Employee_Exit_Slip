@@ -2,31 +2,16 @@
 
 @layer base {
   :root {
-    --accent-color: #007BFF;
-    --accent-hover: #0056b3;
-    --bg-gradient-start: #e0eafc;
-    --bg-gradient-end: #cfdef3;
+    --accent-color: #667eea;
+    --accent-hover: #5568d3;
+    --bg-gradient-start: #f8f9fa;
+    --bg-gradient-end: #e9ecef;
     --card-bg: #ffffff;
-    --text-primary: #1a1a1a;
+    --text-primary: #1f2937;
     --text-secondary: #6b7280;
     --input-bg: #ffffff;
     --input-border: #d1d5db;
-    --input-border-focus: #007BFF;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --accent-color: #00B894;
-      --accent-hover: #00a582;
-      --bg-gradient-start: #0f2027;
-      --bg-gradient-end: #203a43;
-      --card-bg: #1e1e1e;
-      --text-primary: #f3f4f6;
-      --text-secondary: #9ca3af;
-      --input-bg: #2a2a2a;
-      --input-border: #404040;
-      --input-border-focus: #00B894;
-    }
+    --input-border-focus: #667eea;
   }
 
   html {
@@ -65,13 +50,7 @@
   .auth-input:focus {
     border-color: var(--input-border-focus);
     outline: none;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .auth-input:focus {
-      box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
-    }
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
 
   .auth-label {

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { ManagerDashboardStats, ExitRequest } from './types';
+import type { ManagerDashboardStats, ExitRequest, ExitRequestWithHistory } from './types';
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -62,3 +62,11 @@ export async function fetchMyExitRequests(): Promise<ExitRequest[]>
   return res.data;
 }
 
+export async function fetchRequestsDetails(
+  id: number
+): Promise<ExitRequestWithHistory>
+{
+  const res = await api.get(`/exit-requests/manager/requests/${id}`);
+
+  return res.data;
+}

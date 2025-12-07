@@ -42,7 +42,8 @@ export async function getMyExitRequests(employeeId: number) {
 
 //! ---------- Manager Side ----------
 export async function getManagerStats(){
-    const [pending, approved, rejected] = await Promise.all([
+    const [total, pending, approved, rejected] = await Promise.all([
+        prisma.exitRequest.count(),
         prisma.exitRequest.count({
             where: { status: 'PENDING' },
         }),
@@ -55,6 +56,7 @@ export async function getManagerStats(){
     ]);
 
     return {
+        totalRequests: total,
         totalPending: pending,
         totalApproved: approved,
         totalRejected: rejected,

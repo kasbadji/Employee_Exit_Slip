@@ -8,6 +8,7 @@ export interface User {
 }
 
 export interface ManagerDashboardStats {
+  totalRequests: number;
   totalPending: number;
   totalApproved: number;
   totalRejected: number;
@@ -22,5 +23,25 @@ export interface ExitRequest {
     id_user: number;
     full_name: string;
     email: string;
+    department?: string;
   };
+  exitDate?: string;
+  exitTime?: string;
+}
+
+export interface StatusHistoryEntry {
+  id_history: number;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  comment: string | null;
+  createdAt: string;
+  changedBy: {
+    id_user: number;
+    full_name: string;
+    role: Role;
+    email: string;
+  };
+}
+
+export interface ExitRequestWithHistory extends ExitRequest {
+  history: StatusHistoryEntry[];
 }
