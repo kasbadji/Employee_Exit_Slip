@@ -7,6 +7,7 @@ import {
     getManagerRequests,
     decideOnRequest,
     getRequestDetails,
+    exportManagerRequestsCsv,
 } from '../controllers/exitRequest.controller';
 
 const router = Router();
@@ -32,6 +33,13 @@ router.get(
     isTokenValid,
     authorizeRoles('MANAGER', 'ADMIN'),
     getManagerDashboard
+);
+
+router.get(
+    '/manager/export',
+    isTokenValid,
+    authorizeRoles('MANAGER', 'ADMIN'),
+    exportManagerRequestsCsv
 );
 
 router.get(

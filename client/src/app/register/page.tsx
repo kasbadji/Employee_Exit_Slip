@@ -3,6 +3,7 @@
 import api from '@/lib/api';
 import Link from 'next/link';
 import { useState } from 'react';
+import "./register.css";
 
 export default function RegisterPage() {
     const [form, setForm] = useState({
@@ -53,7 +54,7 @@ export default function RegisterPage() {
                 setTimeout(() => {
                     if(user.role === 'ADMIN') window.location.href = '/admin/dashboard';
                     else if(user.role === 'MANAGER') window.location.href = '/manager/dashboard';
-                    else window.location.href = '/employee/dashboard';
+                    else window.location.href = '/employee';
                 }, 500);
             }
         }
@@ -68,39 +69,39 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center auth-background px-4 py-12">
-            <div className="w-full max-w-md animate-fade-in">
-                <div className="auth-card rounded-2xl shadow-lg p-8 md:p-10 space-y-6">
+        <div className="register-container">
+            <div className="register-card-wrapper">
+                <div className="register-card">
                     {/* Header */}
-                    <div className="text-center space-y-2">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: 'var(--accent-color)' }}>
-                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="register-header">
+                        <div className="register-icon-wrapper">
+                            <svg className="register-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                             </svg>
                         </div>
-                        <h2 className="text-3xl font-bold auth-label">Create Account</h2>
-                        <p className="auth-text-secondary text-sm">Join our employee management system</p>
+                        <h2 className="register-title">Create Account</h2>
+                        <p className="register-subtitle">Join our employee management system</p>
                     </div>
 
                     {/* Message Alert */}
                     {message && (
-                        <div className={`border p-3 rounded-lg ${
+                        <div className={`register-message-alert ${
                             message.type === 'success'
-                                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-                                : 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                                ? 'register-message-success'
+                                : 'register-message-error'
                         }`}>
-                            <div className="flex items-center gap-2">
+                            <div className="register-message-content">
                                 {message.type === 'success' ? (
-                                    <svg className="w-5 h-5 text-green-600 dark:text-green-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="register-message-icon register-message-icon-success" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                     </svg>
                                 ) : (
-                                    <svg className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="register-message-icon register-message-icon-error" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                     </svg>
                                 )}
-                                <p className={`text-sm ${
-                                    message.type === 'success' ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'
+                                <p className={`register-message-text ${
+                                    message.type === 'success' ? 'register-message-text-success' : 'register-message-text-error'
                                 }`}>
                                     {message.text}
                                 </p>
@@ -109,9 +110,9 @@ export default function RegisterPage() {
                     )}
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-1">
-                            <label htmlFor="fullName" className="block text-sm font-medium auth-label">
+                    <form onSubmit={handleSubmit} className="register-form">
+                        <div className="register-form-group">
+                            <label htmlFor="fullName" className="register-label">
                                 Full Name
                             </label>
                             <input
@@ -120,14 +121,14 @@ export default function RegisterPage() {
                                 name="fullName"
                                 value={form.fullName}
                                 onChange={handleChange}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none"
+                                className="register-input"
                                 placeholder="your full name"
                                 required
                             />
                         </div>
 
-                        <div className="space-y-1">
-                            <label htmlFor="email" className="block text-sm font-medium auth-label">
+                        <div className="register-form-group">
+                            <label htmlFor="email" className="register-label">
                                 Email Address
                             </label>
                             <input
@@ -136,14 +137,14 @@ export default function RegisterPage() {
                                 name="email"
                                 value={form.email}
                                 onChange={handleChange}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none"
+                                className="register-input"
                                 placeholder="you@example.com"
                                 required
                             />
                         </div>
 
-                        <div className="space-y-1">
-                            <label htmlFor="password" className="block text-sm font-medium auth-label">
+                        <div className="register-form-group">
+                            <label htmlFor="password" className="register-label">
                                 Password
                             </label>
                             <input
@@ -152,14 +153,14 @@ export default function RegisterPage() {
                                 name="password"
                                 value={form.password}
                                 onChange={handleChange}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none"
+                                className="register-input"
                                 placeholder="••••••••"
                                 required
                             />
                         </div>
 
-                        <div className="space-y-1">
-                            <label htmlFor="role" className="block text-sm font-medium auth-label">
+                        <div className="register-form-group">
+                            <label htmlFor="role" className="register-label">
                                 Role
                             </label>
                             <select
@@ -167,8 +168,7 @@ export default function RegisterPage() {
                                 name="role"
                                 value={form.role}
                                 onChange={handleChange}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none appearance-none cursor-pointer"
-                                style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 20 20%27%3e%3cpath stroke=%27%236b7280%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%271.5%27 d=%27M6 8l4 4 4-4%27/%3e%3c/svg%3e")', backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em', paddingRight: '2.5rem' }}
+                                className="register-select"
                             >
                                 <option value="EMPLOYEE">Employee</option>
                                 <option value="MANAGER">Manager</option>
@@ -178,13 +178,13 @@ export default function RegisterPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="auth-button w-full text-white font-semibold py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 mt-6"
+                            className="register-button"
                         >
                             {loading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                <span className="register-button-content">
+                                    <svg className="register-spinner" fill="none" viewBox="0 0 24 24">
+                                        <circle className="register-spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="register-spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
                                     Creating account...
                                 </span>
@@ -195,10 +195,10 @@ export default function RegisterPage() {
                     </form>
 
                     {/* Footer */}
-                    <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <p className="text-sm auth-text-secondary">
+                    <div className="register-footer">
+                        <p className="register-footer-text">
                             Already have an account?{" "}
-                            <Link href="/login" className="font-semibold auth-link">
+                            <Link href="/login" className="register-link">
                                 Sign in
                             </Link>
                         </p>

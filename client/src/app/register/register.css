@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+.register-container {
+  @apply min-h-screen flex items-center justify-center px-4 py-12;
+  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  transition: background 0.3s ease;
+}
+
+.register-card-wrapper {
+  @apply w-full max-w-md;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.register-card {
+  @apply rounded-2xl shadow-lg p-8 md:p-10 space-y-6;
+  background-color: var(--card-bg);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-header {
+  @apply text-center space-y-2;
+}
+
+.register-icon-wrapper {
+  @apply inline-flex items-center justify-center w-16 h-16 rounded-full mb-4;
+  background-color: var(--accent-color);
+}
+
+.register-icon {
+  @apply w-8 h-8 text-white;
+}
+
+.register-title {
+  @apply text-3xl font-bold;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.register-subtitle {
+  @apply text-sm;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.register-message-alert {
+  @apply border p-3 rounded-lg;
+}
+
+.register-message-success {
+  @apply bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800;
+}
+
+.register-message-error {
+  @apply bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800;
+}
+
+.register-message-content {
+  @apply flex items-center gap-2;
+}
+
+.register-message-icon {
+  @apply w-5 h-5 shrink-0;
+}
+
+.register-message-icon-success {
+  @apply text-green-600 dark:text-green-400;
+}
+
+.register-message-icon-error {
+  @apply text-red-600 dark:text-red-400;
+}
+
+.register-message-text {
+  @apply text-sm;
+}
+
+.register-message-text-success {
+  @apply text-green-700 dark:text-green-300;
+}
+
+.register-message-text-error {
+  @apply text-red-700 dark:text-red-300;
+}
+
+.register-form {
+  @apply space-y-4;
+}
+
+.register-form-group {
+  @apply space-y-1;
+}
+
+.register-label {
+  @apply block text-sm font-medium;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.register-input {
+  @apply w-full px-4 py-2.5 border rounded-lg text-sm;
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.register-input:focus {
+  @apply outline-none;
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.register-select {
+  @apply w-full px-4 py-2.5 border rounded-lg text-sm appearance-none cursor-pointer;
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.register-select:focus {
+  @apply outline-none;
+  border-color: var(--input-border-focus);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.register-button {
+  @apply w-full text-white font-semibold py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed mt-6;
+  background-color: var(--accent-color);
+  transition: all 0.3s ease;
+}
+
+.register-button:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.register-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.register-button:focus {
+  @apply outline-none ring-2 ring-offset-2;
+  --tw-ring-color: var(--accent-color);
+}
+
+.register-button-content {
+  @apply flex items-center justify-center gap-2;
+}
+
+.register-spinner {
+  @apply animate-spin h-5 w-5 text-white;
+}
+
+.register-spinner-circle {
+  @apply opacity-25;
+}
+
+.register-spinner-path {
+  @apply opacity-75;
+}
+
+.register-footer {
+  @apply text-center pt-4 border-t border-gray-200 dark:border-gray-700;
+}
+
+.register-footer-text {
+  @apply text-sm;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.register-link {
+  @apply font-semibold;
+  color: var(--accent-color);
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: var(--accent-hover);
+}

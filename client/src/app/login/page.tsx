@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
+import "./login.css";
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -19,14 +20,14 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            await login(email, password);
+            const user = await login(email, password);
 
-            const token = localStorage.getItem("token");
-            if (!token) {
-                throw new Error("Authentication token not found");
+            // Redirect based on user role
+            if (user.role === "EMPLOYEE") {
+                router.push("/employee/requests");
+            } else if (user.role === "MANAGER" || user.role === "ADMIN") {
+                router.push("/manager/dashboard");
             }
-
-            router.push("manager/dashboard");
         }
         catch (error: any) {
             setError(error.message || "An unexpected error occurred");
@@ -37,36 +38,36 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center auth-background px-4 py-12">
-            <div className="w-full max-w-md animate-fade-in">
-                <div className="auth-card rounded-2xl shadow-lg p-8 md:p-10 space-y-6">
+        <div className="login-container">
+            <div className="login-card-wrapper">
+                <div className="login-card">
                     {/* Header */}
-                    <div className="text-center space-y-2">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4" style={{ backgroundColor: 'var(--accent-color)' }}>
-                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="login-header">
+                        <div className="login-icon-wrapper">
+                            <svg className="login-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
                         </div>
-                        <h2 className="text-3xl font-bold auth-label">Welcome Back</h2>
-                        <p className="auth-text-secondary text-sm">Sign in to continue to your account</p>
+                        <h2 className="login-title">Welcome Back</h2>
+                        <p className="login-subtitle">Sign in to continue to your account</p>
                     </div>
 
                     {/* Error Message */}
                     {error && (
-                        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-3 rounded-lg">
-                            <div className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="login-error-alert">
+                            <div className="login-error-content">
+                                <svg className="login-error-icon" fill="currentColor" viewBox="0 0 20 20">
                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                                 </svg>
-                                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                                <p className="login-error-text">{error}</p>
                             </div>
                         </div>
                     )}
 
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div className="space-y-1">
-                            <label htmlFor="email" className="block text-sm font-medium auth-label">
+                    <form onSubmit={handleSubmit} className="login-form">
+                        <div className="login-form-group">
+                            <label htmlFor="email" className="login-label">
                                 Email Address
                             </label>
                             <input
@@ -74,14 +75,14 @@ export default function LoginPage() {
                                 id="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none"
+                                className="login-input"
                                 placeholder="you@example.com"
                                 required
                             />
                         </div>
 
-                        <div className="space-y-1">
-                            <label htmlFor="password" className="block text-sm font-medium auth-label">
+                        <div className="login-form-group">
+                            <label htmlFor="password" className="login-label">
                                 Password
                             </label>
                             <input
@@ -89,7 +90,7 @@ export default function LoginPage() {
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="auth-input w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none"
+                                className="login-input"
                                 placeholder="••••••••"
                                 required
                             />
@@ -98,17 +99,13 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="auth-button w-full text-white font-semibold py-3 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2"
-                            style={{
-                                backgroundColor: loading ? 'var(--accent-color)' : undefined,
-                                focusRingColor: 'var(--accent-color)'
-                            }}
+                            className="login-button"
                         >
                             {loading ? (
-                                <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                <span className="login-button-content">
+                                    <svg className="login-spinner" fill="none" viewBox="0 0 24 24">
+                                        <circle className="login-spinner-circle" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="login-spinner-path" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
                                     Signing in...
                                 </span>
@@ -119,10 +116,10 @@ export default function LoginPage() {
                     </form>
 
                     {/* Footer */}
-                    <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <p className="text-sm auth-text-secondary">
+                    <div className="login-footer">
+                        <p className="login-footer-text">
                             Don't have an account?{" "}
-                            <Link href="/register" className="font-semibold auth-link">
+                            <Link href="/register" className="login-link">
                                 Sign up
                             </Link>
                         </p>

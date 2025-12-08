@@ -5,22 +5,26 @@ import * as exitService from '../services/exitRequest.service';
 //! ---------- Employee endpoints ----------
 export async function createExitRequest(req: AuthRequest, res: Response) {
     try {
-        if (!req.user) return res.sendStatus(401).json({ message: 'Unauthorized' });
+        if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
 
-        const { raison } = req.body;
-        if (!raison || typeof raison !== 'string') {
+        const { reason } = req.body;
+        console.log('Received request body:', req.body);
+        console.log('User:', req.user);
+
+        if (!reason || typeof reason !== 'string') {
             return res.status(400).json({ message: 'Invalid reason' });
         }
 
         const exitRequest = await exitService.createExitRequest(req.user.id, {
-            reason: raison,
+            reason,
         });
 
         return res.status(201).json(exitRequest);
     }
-    catch (err) {
+    catch (err: any) {
         console.error('Error creating exit request:', err);
-        return res.status(500).json({ message: 'Internal server error' });
+        console.error('Error stack:', err.stack);
+        return res.status(500).json({ message: 'Internal server error', error: err.message });
     }
 }
 
@@ -109,6 +113,63 @@ export async function getRequestDetails(req: AuthRequest, res: Response) {
   }
   catch (err) {
     console.error('getRequestDetails error: ', err);
+    return res.status(500).json({ message: 'Server error' });
+  }
+}
+
+//!---------- CSV file ----------
+function escapeCsv(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  if (/[",\n]/.test(str)) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+}
+
+export async function exportManagerRequestsCsv(req: AuthRequest, res: Response) {
+  try {
+    const { status } = req.query;
+    const valid = ['PENDING', 'APPROVED', 'REJECTED'];
+
+    const s =
+      typeof status === 'string' && valid.includes(status)
+        ? (status as 'PENDING' | 'APPROVED' | 'REJECTED')
+        : undefined;
+
+    const requests = await exitService.getManagerRequestsForExport(s);
+
+    const header = [
+      'ID',
+      'Name',
+      'Email',
+      'Reason',
+      'Requested At',
+      'Status',
+    ];
+
+    const rows = requests.map((r) => [
+      r.id_request,
+      r.employee?.full_name ?? '',
+      r.employee?.email ?? '',
+      r.reason,
+      r.requestedAt.toISOString(),
+      r.status,
+    ]);
+
+    const csv =
+      [header.join(','), ...rows.map((row) => row.map(escapeCsv).join(','))].join(
+        '\n'
+      );
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="exit_requests.csv"'
+    );
+    return res.send(csv);
+  } catch (err) {
+    console.error('exportManagerRequestsCsv error:', err);
     return res.status(500).json({ message: 'Server error' });
   }
 }

@@ -1,0 +1,581 @@
+/* Employee Requests Page - Modern Design inspired by Figma */
+
+/* Loading States */
+.employee-loading-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.employee-loading-content {
+    text-align: center;
+}
+
+.employee-loading-spinner-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+}
+
+.employee-loading-spinner-ping {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background-color: rgba(139, 92, 246, 0.4);
+    animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.employee-loading-spinner-spin {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+}
+
+.employee-loading-text {
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+@keyframes ping {
+    75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Main Container */
+.employee-requests-container {
+    min-height: 100vh;
+    background: #f5f5f5;
+    padding: 0;
+}
+
+.employee-requests-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Section - Purple gradient like Figma */
+.employee-requests-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.employee-requests-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.employee-requests-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem;
+    position: relative;
+}
+
+.employee-requests-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+    position: relative;
+}
+
+/* Error Alert */
+.employee-error-alert {
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+    margin: 2rem;
+}
+
+.employee-error-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-error-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #dc2626;
+    flex-shrink: 0;
+}
+
+.employee-error-text {
+    color: #991b1b;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Quick Actions Section (Form) - Purple gradient like Figma */
+.employee-form-section {
+    padding: 2rem;
+}
+
+.employee-form-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.employee-form-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.employee-form-header {
+    padding: 2rem 2rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.employee-form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-form-title svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.employee-form-body {
+    padding: 2rem;
+    background: white;
+}
+
+.employee-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.employee-form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.employee-form-required {
+    color: #ef4444;
+}
+
+.employee-form-textarea {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: #111827;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.employee-form-textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.employee-form-textarea::placeholder {
+    color: #9ca3af;
+}
+
+.employee-form-char-count {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+    text-align: right;
+}
+
+.employee-form-submit {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.employee-form-submit:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.employee-form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.employee-form-submit-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.employee-form-submit-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.employee-form-spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    animation: spin 1s linear infinite;
+}
+
+.employee-form-spinner-circle {
+    opacity: 0.25;
+}
+
+.employee-form-spinner-path {
+    opacity: 0.75;
+}
+
+/* History Section Header */
+.employee-history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2rem 2rem 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.employee-history-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-history-title svg {
+    width: 2rem;
+    height: 2rem;
+    color: #8b5cf6;
+}
+
+.employee-history-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Empty State */
+.employee-history-empty {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 4rem 2rem;
+    margin: 0 2rem 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.employee-history-empty-content {
+    text-align: center;
+    max-width: 28rem;
+    margin: 0 auto;
+}
+
+.employee-history-empty-icon-wrapper {
+    width: 5rem;
+    height: 5rem;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.employee-history-empty-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: #8b5cf6;
+}
+
+.employee-history-empty-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.75rem;
+}
+
+.employee-history-empty-text {
+    color: #6b7280;
+    font-size: 1rem;
+    line-height: 1.625;
+    margin: 0;
+}
+
+/* Request Cards Grid - Table-like layout similar to Figma */
+.employee-history-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 2rem 2rem;
+}
+
+.employee-request-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e5e7eb;
+}
+
+.employee-request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.employee-request-card-body {
+    padding: 1.5rem;
+}
+
+.employee-request-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.employee-request-card-id-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.employee-request-card-icon-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border-radius: 0.625rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.employee-request-card-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: #8b5cf6;
+}
+
+.employee-request-card-id-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin: 0 0 0.125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.employee-request-card-id {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.employee-request-card-status {
+    padding: 0.375rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-approved {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.employee-request-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.employee-request-card-reason-box {
+    background: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border-left: 4px solid #8b5cf6;
+}
+
+.employee-request-card-reason-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.employee-request-card-reason-text {
+    font-size: 0.9375rem;
+    color: #374151;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.employee-request-card-date-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.employee-request-card-date-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.employee-request-card-date-label {
+    font-weight: 500;
+}
+
+.employee-request-card-date-value {
+    font-weight: 400;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .employee-requests-container {
+        padding: 0;
+    }
+
+    .employee-requests-header {
+        padding: 2rem 1.5rem;
+    }
+
+    .employee-requests-title {
+        font-size: 1.5rem;
+    }
+
+    .employee-requests-subtitle {
+        font-size: 0.875rem;
+    }
+
+    .employee-form-section {
+        padding: 1rem;
+    }
+
+    .employee-form-card {
+        border-radius: 1rem;
+    }
+
+    .employee-form-header {
+        padding: 1.5rem 1.5rem 0.75rem;
+    }
+
+    .employee-form-title {
+        font-size: 1.25rem;
+    }
+
+    .employee-form-body {
+        padding: 1.5rem;
+    }
+
+    .employee-history-header {
+        padding: 1rem;
+    }
+
+    .employee-history-title {
+        font-size: 1.5rem;
+    }
+
+    .employee-history-grid {
+        padding: 0 1rem 1rem;
+    }
+
+    .employee-history-empty {
+        margin: 0 1rem 1rem;
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .employee-requests-title {
+        font-size: 1.25rem;
+    }
+
+    .employee-request-card-body {
+        padding: 1.25rem;
+    }
+
+    .employee-history-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

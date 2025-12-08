@@ -1,19 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchRequestsDetails } from '../lib/api';
+import { fetchRequestsDetails, decideExitRequest } from '../lib/api';
 import type { ExitRequestWithHistory } from '../lib/types';
 
 interface RequestDetailsModalProps {
   requestId: number | null;
   onClose: () => void;
   canApprove?: boolean;
+  onDecision?: () => void;
 }
 
-export default function RequestDetailsModal({ requestId, onClose, canApprove = false }: RequestDetailsModalProps) {
+export default function RequestDetailsModal({ requestId, onClose, canApprove = false, onDecision }: RequestDetailsModalProps) {
   const [request, setRequest] = useState<ExitRequestWithHistory | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     if (requestId === null) {
@@ -43,6 +45,37 @@ export default function RequestDetailsModal({ requestId, onClose, canApprove = f
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+
+  const handleDecision = async (status: 'APPROVED' | 'REJECTED') => {
+    if (!requestId || processing) return;
+
+    setProcessing(true);
+    setError(null);
+
+    try {
+      await decideExitRequest(requestId, status);
+
+      // Update local request state
+      if (request) {
+        setRequest({ ...request, status });
+      }
+
+      // Notify parent component
+      if (onDecision) {
+        onDecision();
+      }
+
+      // Close modal after short delay
+      setTimeout(() => {
+        onClose();
+      }, 500);
+    } catch (e) {
+      console.error(e);
+      setError(`Failed to ${status.toLowerCase()} request. Please try again.`);
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -185,17 +218,25 @@ export default function RequestDetailsModal({ requestId, onClose, canApprove = f
               {/* Action Buttons */}
               {canApprove && request.status === 'PENDING' && (
                 <div className="action-buttons">
-                  <button className="btn-approve">
+                  <button
+                    className="btn-approve"
+                    onClick={() => handleDecision('APPROVED')}
+                    disabled={processing}
+                  >
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Approve Request
+                    {processing ? 'Processing...' : 'Approve Request'}
                   </button>
-                  <button className="btn-reject">
+                  <button
+                    className="btn-reject"
+                    onClick={() => handleDecision('REJECTED')}
+                    disabled={processing}
+                  >
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
                     </svg>
-                    Reject Request
+                    {processing ? 'Processing...' : 'Reject Request'}
                   </button>
                 </div>
               )}

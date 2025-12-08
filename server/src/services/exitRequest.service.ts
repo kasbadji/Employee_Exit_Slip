@@ -64,7 +64,7 @@ export async function getManagerStats(){
 }
 
 export async function getManagerRequests(
-    status: 'PENDING' | 'APPROVED' | 'REJECTED'
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED'
 ) {
     return await prisma.exitRequest.findMany({
         where: status ? { status } : undefined,
@@ -125,6 +125,26 @@ export async function getRequestWithHistory(requestId: number) {
                     email: true,
                 },
             },
+        },
+    });
+}
+
+export async function getManagerRequestsForExport(
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED'
+ ){
+    return await prisma.exitRequest.findMany({
+        where: status ? { status } : undefined,
+        include: {
+            employee: {
+                select: {
+                    id_user: true,
+                    full_name: true,
+                    email: true,
+                },
+            },
+        },
+        orderBy: {
+                requestedAt: 'desc'
         },
     });
 }

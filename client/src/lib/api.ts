@@ -50,7 +50,7 @@ export async function decideExitRequest(
 //! ----- Helper function For Employee Dashboard ------
 export async function createExitRequest(reason: string): Promise<ExitRequest>
 {
-  const res = await api.post('/exit-requests', { raison: reason });
+  const res = await api.post('/exit-requests', { reason });
 
   return res.data;
 }
@@ -67,6 +67,18 @@ export async function fetchRequestsDetails(
 ): Promise<ExitRequestWithHistory>
 {
   const res = await api.get(`/exit-requests/manager/requests/${id}`);
+
+  return res.data;
+}
+
+export async function exportManagerRequestsCsv(
+  status?: 'PENDING' | 'APPROVED' | 'REJECTED'
+): Promise<Blob>
+{
+  const res = await api.get('/exit-requests/manager/export', {
+    params: status ? { status } : {},
+    responseType: 'blob',
+  });
 
   return res.data;
 }

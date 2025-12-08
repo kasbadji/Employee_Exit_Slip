@@ -7,7 +7,7 @@ import { User } from "../lib/types";
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   loading: boolean;
 }
@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const { token, user } = res.data.data;
     saveToken(token);
     setUser(user);
+    return user;
   };
 
   const logout = () => {
